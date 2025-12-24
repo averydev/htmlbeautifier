@@ -331,6 +331,28 @@ describe HtmlBeautifier do
     expect(described_class.beautify(source)).to eq(expected)
   end
 
+  it "handles ERB tag immediately before closing bracket" do
+    source = code <<~ERB
+      <select>
+        <option
+          value="test"
+          <%= "selected" if condition %>>
+          Name
+        </option>
+      </select>
+    ERB
+    expected = code <<~ERB
+      <select>
+        <option
+          value="test"
+          <%= "selected" if condition %>>
+          Name
+        </option>
+      </select>
+    ERB
+    expect(described_class.beautify(source)).to eq(expected)
+  end
+
   it "indents case statements" do
     source = code <<~ERB
       <div>
