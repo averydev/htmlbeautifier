@@ -353,6 +353,38 @@ describe HtmlBeautifier do
     expect(described_class.beautify(source)).to eq(expected)
   end
 
+  it "handles ERB before closing bracket inside an each block" do
+    source = code <<~ERB
+      <%= frame do %>
+        <div>
+          <select>
+            <% items.each do |item| %>
+              <option value="<%= item.path %>"
+                      <%= "selected" if item.selected? %>>
+                <%= item.name %>
+              </option>
+            <% end %>
+          </select>
+        </div>
+      <% end %>
+    ERB
+    expected = code <<~ERB
+      <%= frame do %>
+        <div>
+          <select>
+            <% items.each do |item| %>
+              <option value="<%= item.path %>"
+                      <%= "selected" if item.selected? %>>
+                <%= item.name %>
+              </option>
+            <% end %>
+          </select>
+        </div>
+      <% end %>
+    ERB
+    expect(described_class.beautify(source)).to eq(expected)
+  end
+
   it "indents case statements" do
     source = code <<~ERB
       <div>
