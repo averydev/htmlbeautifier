@@ -433,6 +433,21 @@ describe HtmlBeautifier do
     expect(described_class.beautify(source)).to eq(source)
   end
 
+  it "handles option with ERB attribute followed by div with ERB before closing bracket" do
+    source = code <<~ERB
+      <select>
+        <% opts.each do |opt| %>
+          <option value="<%= opt.path %>">Name</option>
+        <% end %>
+      </select>
+      <div class="row"
+           <%= 'hidden' if y %>>
+        <div class="cell">Content</div>
+      </div>
+    ERB
+    expect(described_class.beautify(source)).to eq(source)
+  end
+
   it "does not indent after comments" do
     source = code <<~HTML
       <!-- This is a comment -->
